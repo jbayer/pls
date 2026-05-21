@@ -31,7 +31,12 @@ command = '''
 '''
 ```
 
-Note: The dotted package name `hwinf.pls` must be quoted in TOML (`[build."hwinf.pls"]`) so the dot is treated as part of the key rather than nesting tables.
+**Important:** The dotted package name `hwinf.pls` must be quoted in TOML (`[build."hwinf.pls"]`). Without quotes, TOML interprets the dot as table nesting — `[build.hwinf.pls]` would parse as a `pls` key inside a `hwinf` table inside `build`, which is not valid and will produce an error like:
+
+```
+unknown field `pls`, expected one of `command`, `runtime-packages`, `sandbox`, `version`, `description`, `license`
+in `build.hwinf`
+```
 
 ### Build and Publish Commands
 
@@ -110,3 +115,17 @@ Following the recommended convention for organizations with multiple teams:
 - **Package names** use dots for hierarchy: `hwinf.pls` (team.package)
 - **Full install path**: `jbayer/hwinf.pls` (org/team.package)
 - This maps to the pattern an organization like NVIDIA would use: `nvidia/hwinf.pls`
+
+### Quoting Dotted Names in TOML
+
+Because TOML uses dots as table separators, any dotted name in a table header must be quoted. This applies to both the `[build]` section and the `[install]` section:
+
+```toml
+# Correct - quotes preserve the dot as part of the name
+[build."hwinf.pls"]
+
+# Wrong - TOML parses this as nested tables and will error
+[build.hwinf.pls]
+```
+
+On the command line, quotes are not needed — `flox build hwinf.pls` and `flox install jbayer/hwinf.pls` work as-is.
