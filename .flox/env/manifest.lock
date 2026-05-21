@@ -9,7 +9,14 @@
     },
     "hook": {},
     "profile": {},
-    "options": {}
+    "options": {},
+    "build": {
+      "hwinf.pls": {
+        "command": "  go build -o pls .\n  mkdir -p $out/bin\n  cp pls $out/bin/\n",
+        "version": "0.1.0",
+        "description": "Hello world pls CLI"
+      }
+    }
   },
   "packages": [
     {
