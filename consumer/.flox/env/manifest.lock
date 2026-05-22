@@ -2,45 +2,9 @@
   "lockfile-version": 1,
   "manifest": {
     "schema-version": "1.12.0",
-    "install": {
-      "pls": {
-        "pkg-path": "jbayer/hwinf.pls",
-        "pkg-group": "pls",
-        "systems": [
-          "aarch64-darwin"
-        ]
-      }
-    },
     "hook": {},
     "profile": {},
     "options": {}
   },
-  "packages": [
-    {
-      "attr_path": "hwinf.pls",
-      "derivation": "/nix/store/a3v2r90nankyjh182f0762k6jd0nl60w-hwinf.pls-0.1.0.drv",
-      "description": "Hello world pls CLI",
-      "install_id": "pls",
-      "locked_url": "ssh://git@github.com/jbayer/pls.git?rev=680ca27ea061bf24ff29b4a06d33bf07f29bb083",
-      "name": "hwinf.pls-0.1.0",
-      "pname": "hwinf.pls",
-      "rev": "680ca27ea061bf24ff29b4a06d33bf07f29bb083",
-      "rev_count": 3,
-      "rev_date": "2026-05-21T18:10:29Z",
-      "scrape_date": "2026-05-21T18:17:23.161589Z",
-      "stabilities": [
-        "unstable"
-      ],
-      "version": "0.1.0",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "out": "/nix/store/qghbp14z5qd9bi0cgv9lws6bnnk1pdag-hwinf.pls-0.1.0"
-      },
-      "system": "aarch64-darwin",
-      "group": "pls",
-      "priority": 5
-    }
-  ]
+  "packages": []
 }

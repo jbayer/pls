@@ -8,20 +8,20 @@ This repo demonstrates the recommended two-environment pattern for building and 
 |---|---|---|
 | **Location** | Project root (`.flox/`) | `consumer/` subdirectory |
 | **Purpose** | Build toolchain + build definition | Installs the published package |
-| **Contains** | Go compiler, source code, `[build]` section | Only the published `jbayer/hwinf.pls` package |
+| **Contains** | Go compiler, source code, `[build]` section | Only the published `jbayer/hwinf-pls` package |
 | **FloxHub artifact** | `flox publish` produces a **package** | `flox push` produces a **remote environment** |
 
 ## Env 1 - The Producer
 
 The producer environment lives alongside the source code in the git repo. The `[install]` section carries the build toolchain and the `[build]` section compiles the binary into `$out/bin`.
 
-### Manifest (`./flox/env/manifest.toml`)
+### Manifest (`.flox/env/manifest.toml`)
 
 ```toml
 [install]
 go.pkg-path = "go"
 
-[build."hwinf.pls"]
+[build.hwinf-pls]
 description = "Hello world pls CLI"
 version = "0.1.0"
 command = '''
@@ -31,27 +31,20 @@ command = '''
 '''
 ```
 
-**Important:** The dotted package name `hwinf.pls` must be quoted in TOML (`[build."hwinf.pls"]`). Without quotes, TOML interprets the dot as table nesting — `[build.hwinf.pls]` would parse as a `pls` key inside a `hwinf` table inside `build`, which is not valid and will produce an error like:
-
-```
-unknown field `pls`, expected one of `command`, `runtime-packages`, `sandbox`, `version`, `description`, `license`
-in `build.hwinf`
-```
-
 ### Build and Publish Commands
 
 ```bash
 # Build the package locally
-flox build hwinf.pls
+flox build hwinf-pls
 
 # Test the built binary
-./result-hwinf.pls/bin/pls
+./result-hwinf-pls/bin/pls
 
 # Publish the package to FloxHub (requires clean git state + pushed remote)
-flox publish -o jbayer hwinf.pls
+flox publish -o jbayer hwinf-pls
 ```
 
-After publishing, the package is available as `jbayer/hwinf.pls` in the Flox catalog.
+After publishing, the package is available as `jbayer/hwinf-pls` in the Flox catalog.
 
 ## Env 2 - The Consumer
 
@@ -61,17 +54,17 @@ The consumer environment is a thin, source-free environment that installs the pu
 
 ```toml
 [install]
-pls.pkg-path = "jbayer/hwinf.pls"
+pls.pkg-path = "jbayer/hwinf-pls"
 ```
 
 ### Setup and Push Commands
 
 ```bash
 # Create the consumer environment
-flox init -d consumer -n hwinf.pls
+flox init -d consumer -n hwinf-pls
 
 # Install the published package
-flox install -d consumer jbayer/hwinf.pls
+flox install -d consumer jbayer/hwinf-pls
 
 # Test locally
 flox activate -d consumer -- pls
@@ -87,13 +80,13 @@ Once both artifacts are on FloxHub, there are two ways to use the package:
 ### Option A: Install the package into any environment
 
 ```bash
-flox install jbayer/hwinf.pls
+flox install jbayer/hwinf-pls
 ```
 
 ### Option B: Activate the remote consumer environment
 
 ```bash
-flox activate -r jbayer/hwinf.pls -- pls
+flox activate -r jbayer/hwinf-pls -- pls
 ```
 
 ## Prerequisites for Publishing
@@ -110,22 +103,11 @@ Flox clones the repo to a temp location and performs a clean build to ensure rep
 
 ## Naming Convention
 
-Following the recommended convention for organizations with multiple teams:
+When multiple teams share a single FloxHub org, use a hyphenated prefix to denote team ownership:
 
-- **Package names** use dots for hierarchy: `hwinf.pls` (team.package)
-- **Full install path**: `jbayer/hwinf.pls` (org/team.package)
-- This maps to the pattern an organization like NVIDIA would use: `nvidia/hwinf.pls`
+- **Package names** use a team prefix with a hyphen: `hwinf-pls` (team-package)
+- **Full install path**: `jbayer/hwinf-pls` (org/team-package)
+- **Environment names** follow the same convention: `hwinf-pls`
+- This maps to the pattern an organization like NVIDIA would use: `nvidia/hwinf-pls`
 
-### Quoting Dotted Names in TOML
-
-Because TOML uses dots as table separators, any dotted name in a table header must be quoted. This applies to both the `[build]` section and the `[install]` section:
-
-```toml
-# Correct - quotes preserve the dot as part of the name
-[build."hwinf.pls"]
-
-# Wrong - TOML parses this as nested tables and will error
-[build.hwinf.pls]
-```
-
-On the command line, quotes are not needed — `flox build hwinf.pls` and `flox install jbayer/hwinf.pls` work as-is.
+Avoid using dots (`.`) or slashes (`/`) within package names, as dots have special meaning in Nix attribute paths and slashes are reserved for the org/package separator.

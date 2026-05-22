@@ -72,7 +72,7 @@ go.pkg-path = "go"
 ##  $ flox build
 ##  $ flox publish
 ## ------------------------------------------------------------------
-[build."hwinf.pls"]
+[build.hwinf-pls]
 description = "Hello world pls CLI"
 version = "0.1.0"
 command = '''
